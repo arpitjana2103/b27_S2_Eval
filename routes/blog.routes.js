@@ -6,13 +6,13 @@ const blogRouter = express.Router();
 const {auth} = require('../middleware/auth.middleware.js');
 const {authz} = require('../middleware/authz.middleware.js')
 
-blogRouter.get('/allBlogs', getBlogsLogic);
-blogRouter.get('/', auth, authz(['User']), getBlogbyUserID);
+blogRouter.get('/allBlogs', getAllBlogsLogic);
+blogRouter.get('/', auth, authz(['User']), getBlogbyUser);
 blogRouter.post('/create', auth, authz(['User']), createBlogLogic);
 blogRouter.patch('/update/:blogID', auth,authz(['User']), updateBlogLogic);
 blogRouter.delete('/delete/:blogID', auth,authz(['User', 'Moderator']), deleteBlogLogic);
 
-async function getBlogbyUserID(req, res){
+async function getBlogbyUser(req, res){
  const userID = req.body.userID;
  try {
     const blogs = await BlogModel.find({userID: userID});
@@ -28,7 +28,7 @@ async function getBlogbyUserID(req, res){
 }
 }
 
-async function getBlogsLogic(req, res) {
+async function getAllBlogsLogic(req, res) {
     try {
         const blogs = await BlogModel.find({});
         res.status(200).json({
